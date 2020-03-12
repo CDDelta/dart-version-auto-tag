@@ -11,7 +11,7 @@ inputs:
     required: true
 runs:
   using: 'node12'
-  main: 'lib/index.js'
+  main: 'lib/main.js'
 branding:
   icon: 'tag'
   color: 'blue'

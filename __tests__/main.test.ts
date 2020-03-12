@@ -1,27 +1,24 @@
-import {wait} from '../src/wait'
-import * as process from 'process'
-import * as cp from 'child_process'
-import * as path from 'path'
+import core from '@actions/core';
+import { GitHub } from '@actions/github';
+import getPubspecVersion from '../src/getPubspecVersion';
+import checkTagExists from '../src/checkTagExists';
 
-test('throws invalid number', async () => {
-  const input = parseInt('foo', 10)
-  await expect(wait(input)).rejects.toThrow('milliseconds not a number')
-})
+let client: GitHub;
 
-test('wait 500 ms', async () => {
-  const start = new Date()
-  await wait(500)
-  const end = new Date()
-  var delta = Math.abs(end.getTime() - start.getTime())
-  expect(delta).toBeGreaterThan(450)
-})
+beforeEach(() => {
+  const authToken = core.getInput('token');
+  client = new GitHub(authToken);
+});
 
-// shows how the runner will run a javascript action with env / stdout protocol
-test('test runs', () => {
-  process.env['INPUT_MILLISECONDS'] = '500'
-  const ip = path.join(__dirname, '..', 'lib', 'main.js')
-  const options: cp.ExecSyncOptions = {
-    env: process.env
-  }
-  console.log(cp.execSync(`node ${ip}`, options).toString())
-})
+test('read pubspec version', async () => {
+  const version = await getPubspecVersion(client, 'pubspec.yaml');
+  expect(version).toBeDefined();
+});
+
+test('check tag exists', async () => {
+  const realTagExists = checkTagExists(client, 'v0.9.0');
+  expect(realTagExists).toBe(true);
+
+  const fakeTagExists = checkTagExists(client, '12345');
+  expect(fakeTagExists).toBe(false);
+});

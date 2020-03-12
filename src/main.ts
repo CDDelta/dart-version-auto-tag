@@ -1,4 +1,4 @@
-import core from '@actions/core';
+import * as core from '@actions/core';
 import { GitHub } from '@actions/github';
 import createTag from './createTag';
 import getPubspecVersion from './getPubspecVersion';

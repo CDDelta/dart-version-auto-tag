@@ -1,5 +1,5 @@
 import { GitHub, context } from '@actions/github';
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 
 export default async function getPubspecVersion(
   client: GitHub,

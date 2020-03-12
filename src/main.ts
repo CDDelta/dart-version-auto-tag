@@ -1,19 +1,32 @@
-import * as core from '@actions/core'
-import {wait} from './wait'
+import core from '@actions/core';
+import { GitHub } from '@actions/github';
+import createTag from './createTag';
+import getPubspecVersion from './getPubspecVersion';
+import checkTagExists from './checkTagExists';
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`)
+    const authToken = core.getInput('token');
+    const client = new GitHub(authToken);
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    const pubspecPath = core.getInput('path');
 
-    core.setOutput('time', new Date().toTimeString())
+    const version = await getPubspecVersion(client, pubspecPath);
+    if (!version) {
+      core.info(`no updates to ${pubspecPath} to tag.`);
+      return;
+    }
+
+    const tag = version;
+
+    const tagExists = await checkTagExists(client, tag);
+    if (!tagExists) {
+      core.info(`creating tag ${tag}...`);
+      await createTag(client, tag);
+    }
   } catch (error) {
-    core.setFailed(error.message)
+    core.setFailed(error.message);
   }
 }
 
-run()
+run();

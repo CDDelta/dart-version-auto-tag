@@ -1,10 +1,17 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Dart Version Auto Tag'
+description: 'Automatically create tags when you update your pubspec.yaml version'
+author: 'CDDelta'
 inputs:
-  myInput:              # change this
-    description: 'input description here'
-    default: 'default value if applicable'
+  pubspec-path:
+    description: 'Path to the pubspec.yaml file to monitor.'
+    required: false
+    default: 'pubspec.yaml'
+  token:
+    description: 'The GitHub access token to allow file reading and tag creation.'
+    required: true
 runs:
   using: 'node12'
-  main: 'dist/index.js'
+  main: 'lib/index.js'
+branding:
+  icon: 'tag'
+  color: 'blue'

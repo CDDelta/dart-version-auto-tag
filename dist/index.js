@@ -2323,7 +2323,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const github_1 = __webpack_require__(469);
 function createTag(client, tag) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield client.git.createTag(Object.assign({ tag, message: '', object: '', type: 'commit' }, github_1.context.repo));
+        yield client.git.createTag(Object.assign({ tag, message: '', object: github_1.context.sha, type: 'commit' }, github_1.context.repo));
     });
 }
 exports.default = createTag;

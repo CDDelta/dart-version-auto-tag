@@ -6,7 +6,9 @@ import checkTagExists from '../src/checkTagExists';
 let client: GitHub;
 
 beforeEach(() => {
-  const authToken = process.env.token;
+  const authToken = process.env.GITHUB_TOKEN;
+  if (!authToken) throw Error('GITHUB_TOKEN is undefined');
+
   client = new GitHub(authToken);
 });
 

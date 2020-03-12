@@ -4152,11 +4152,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const core_1 = __importDefault(__webpack_require__(470));
+const core = __importStar(__webpack_require__(470));
 const github_1 = __webpack_require__(469);
 const createTag_1 = __importDefault(__webpack_require__(73));
 const getPubspecVersion_1 = __importDefault(__webpack_require__(253));
@@ -4164,23 +4171,23 @@ const checkTagExists_1 = __importDefault(__webpack_require__(98));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const authToken = core_1.default.getInput('token');
+            const authToken = core.getInput('token');
             const client = new github_1.GitHub(authToken);
-            const pubspecPath = core_1.default.getInput('path');
+            const pubspecPath = core.getInput('path');
             const version = yield getPubspecVersion_1.default(client, pubspecPath);
             if (!version) {
-                core_1.default.info(`no updates to ${pubspecPath} to tag.`);
+                core.info(`no updates to ${pubspecPath} to tag.`);
                 return;
             }
             const tag = version;
             const tagExists = yield checkTagExists_1.default(client, tag);
             if (!tagExists) {
-                core_1.default.info(`creating tag ${tag}...`);
+                core.info(`creating tag ${tag}...`);
                 yield createTag_1.default(client, tag);
             }
         }
         catch (error) {
-            core_1.default.setFailed(error.message);
+            core.setFailed(error.message);
         }
     });
 }
@@ -4283,18 +4290,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const github_1 = __webpack_require__(469);
-const js_yaml_1 = __importDefault(__webpack_require__(414));
+const yaml = __importStar(__webpack_require__(414));
 function getPubspecVersion(client, path) {
     return __awaiter(this, void 0, void 0, function* () {
         const pubspecRes = (yield client.repos.getContents(Object.assign({ path, ref: github_1.context.ref }, github_1.context.repo)));
-        const pubspecYaml = pubspecRes.data["content"];
-        const pubspec = js_yaml_1.default.safeLoad(pubspecYaml);
-        return pubspec["version"];
+        const pubspecYaml = pubspecRes.data['content'];
+        const pubspec = yaml.safeLoad(pubspecYaml);
+        return pubspec['version'];
     });
 }
 exports.default = getPubspecVersion;

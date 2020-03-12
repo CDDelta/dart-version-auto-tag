@@ -5,14 +5,20 @@ export default async function getPubspecVersion(
   client: GitHub,
   path: string,
 ): Promise<string | null> {
-  const pubspecRes = (await client.repos.getContents({
-    path,
-    ref: context.ref,
-    ...context.repo,
+  try {
+    const pubspecRes = await client.repos.getContents({
+      path,
+      ref: context.ref || 'master',
+      ...context.repo,
+    });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  })) as any;
-  const pubspecYaml = pubspecRes.data['content'];
+    const pubspecBase64 = (pubspecRes.data as any)['content'];
+    const pubspecYaml = Buffer.from(pubspecBase64, 'base64').toString('utf8');
 
-  const pubspec = yaml.safeLoad(pubspecYaml);
-  return pubspec['version'];
+    const pubspec = yaml.safeLoad(pubspecYaml);
+    return pubspec['version'];
+  } catch (err) {
+    if (err.code === 404) return null;
+    throw err;
+  }
 }

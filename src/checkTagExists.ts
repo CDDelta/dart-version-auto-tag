@@ -4,10 +4,15 @@ export default async function checkTagExists(
   client: GitHub,
   tag: string,
 ): Promise<boolean> {
-  const tagRes = await client.git.getTag({
-    tag_sha: tag,
-    ...context.repo,
-  });
+  try {
+    await client.git.getTag({
+      tag_sha: tag,
+      ...context.repo,
+    });
 
-  return tagRes.data != null;
+    return true;
+  } catch (err) {
+    if (err.code === 404) return false;
+    throw err;
+  }
 }

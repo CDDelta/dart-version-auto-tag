@@ -2536,8 +2536,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const github_1 = __webpack_require__(469);
 function checkTagExists(client, tag) {
     return __awaiter(this, void 0, void 0, function* () {
-        const tagRes = yield client.git.getTag(Object.assign({ tag_sha: tag }, github_1.context.repo));
-        return tagRes.data != null;
+        try {
+            yield client.git.getTag(Object.assign({ tag_sha: tag }, github_1.context.repo));
+            return true;
+        }
+        catch (err) {
+            if (err.code === 404)
+                return false;
+            throw err;
+        }
     });
 }
 exports.default = checkTagExists;
@@ -4176,10 +4183,10 @@ function run() {
             const pubspecPath = core.getInput('pubspec-path');
             const version = yield getPubspecVersion_1.default(client, pubspecPath);
             if (!version) {
-                core.info(`no updates to ${pubspecPath} to tag.`);
+                core.info(`${pubspecPath} is invalid or does not exist`);
                 return;
             }
-            const tag = version;
+            const tag = `v${version}`;
             const tagExists = yield checkTagExists_1.default(client, tag);
             if (!tagExists) {
                 core.info(`creating tag ${tag}...`);
@@ -4302,10 +4309,19 @@ const github_1 = __webpack_require__(469);
 const yaml = __importStar(__webpack_require__(414));
 function getPubspecVersion(client, path) {
     return __awaiter(this, void 0, void 0, function* () {
-        const pubspecRes = (yield client.repos.getContents(Object.assign({ path, ref: github_1.context.ref }, github_1.context.repo)));
-        const pubspecYaml = pubspecRes.data['content'];
-        const pubspec = yaml.safeLoad(pubspecYaml);
-        return pubspec['version'];
+        try {
+            const pubspecRes = yield client.repos.getContents(Object.assign({ path, ref: github_1.context.ref || 'master' }, github_1.context.repo));
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const pubspecBase64 = pubspecRes.data['content'];
+            const pubspecYaml = Buffer.from(pubspecBase64, 'base64').toString('utf8');
+            const pubspec = yaml.safeLoad(pubspecYaml);
+            return pubspec['version'];
+        }
+        catch (err) {
+            if (err.code === 404)
+                return null;
+            throw err;
+        }
     });
 }
 exports.default = getPubspecVersion;

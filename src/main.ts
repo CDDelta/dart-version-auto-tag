@@ -13,11 +13,11 @@ async function run(): Promise<void> {
 
     const version = await getPubspecVersion(client, pubspecPath);
     if (!version) {
-      core.info(`no updates to ${pubspecPath} to tag.`);
+      core.info(`${pubspecPath} is invalid or does not exist`);
       return;
     }
 
-    const tag = version;
+    const tag = `v${version}`;
 
     const tagExists = await checkTagExists(client, tag);
     if (!tagExists) {

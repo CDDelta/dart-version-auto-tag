@@ -7,7 +7,7 @@ export default async function createTag(
   await client.git.createTag({
     tag,
     message: '',
-    object: '',
+    object: context.sha,
     type: 'commit',
     ...context.repo,
   });

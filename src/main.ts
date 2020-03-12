@@ -9,7 +9,7 @@ async function run(): Promise<void> {
     const authToken = core.getInput('token');
     const client = new GitHub(authToken);
 
-    const pubspecPath = core.getInput('path');
+    const pubspecPath = core.getInput('pubspec-path');
 
     const version = await getPubspecVersion(client, pubspecPath);
     if (!version) {

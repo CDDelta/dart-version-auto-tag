@@ -4173,7 +4173,7 @@ function run() {
         try {
             const authToken = core.getInput('token');
             const client = new github_1.GitHub(authToken);
-            const pubspecPath = core.getInput('path');
+            const pubspecPath = core.getInput('pubspec-path');
             const version = yield getPubspecVersion_1.default(client, pubspecPath);
             if (!version) {
                 core.info(`no updates to ${pubspecPath} to tag.`);

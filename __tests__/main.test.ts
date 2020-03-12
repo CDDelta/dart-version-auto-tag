@@ -1,4 +1,3 @@
-import * as core from '@actions/core';
 import { GitHub } from '@actions/github';
 import getPubspecVersion from '../src/getPubspecVersion';
 import checkTagExists from '../src/checkTagExists';

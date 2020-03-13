@@ -5,9 +5,17 @@ export default async function createCommitTag(
   tag: string,
   commitSha: string,
 ): Promise<void> {
+  const tagRes = await client.git.createTag({
+    tag,
+    message: '',
+    object: commitSha,
+    type: 'commit',
+    ...context.repo,
+  });
+
   await client.git.createRef({
     ref: `refs/tags/${tag}`,
-    sha: commitSha,
+    sha: tagRes.data.sha,
     ...context.repo,
   });
 }

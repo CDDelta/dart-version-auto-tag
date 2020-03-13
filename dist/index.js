@@ -7800,7 +7800,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const github_1 = __webpack_require__(469);
 function createCommitTag(client, tag, commitSha) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield client.git.createRef(Object.assign({ ref: `refs/tags/${tag}`, sha: commitSha }, github_1.context.repo));
+        const tagRes = yield client.git.createTag(Object.assign({ tag, message: '', object: commitSha, type: 'commit' }, github_1.context.repo));
+        yield client.git.createRef(Object.assign({ ref: `refs/tags/${tag}`, sha: tagRes.data.sha }, github_1.context.repo));
     });
 }
 exports.default = createCommitTag;

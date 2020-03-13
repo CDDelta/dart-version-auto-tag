@@ -23,6 +23,8 @@ async function run(): Promise<void> {
     if (!tagExists) {
       core.info(`creating tag ${tag}...`);
       await createCommitTag(client, tag, context.sha);
+    } else {
+      core.info(`${tag} already exists, ignoring...`);
     }
   } catch (error) {
     core.setFailed(error.message);

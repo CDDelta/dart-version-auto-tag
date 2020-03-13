@@ -4166,6 +4166,9 @@ function run() {
                 core.info(`creating tag ${tag}...`);
                 yield createCommitTag_1.default(client, tag, github_1.context.sha);
             }
+            else {
+                core.info(`${tag} already exists, ignoring...`);
+            }
         }
         catch (error) {
             core.setFailed(error.message);

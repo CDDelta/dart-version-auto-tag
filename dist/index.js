@@ -2305,32 +2305,6 @@ module.exports = windowsRelease;
 
 /***/ }),
 
-/***/ 73:
-/***/ (function(__unusedmodule, exports, __webpack_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const github_1 = __webpack_require__(469);
-function createTag(client, tag) {
-    return __awaiter(this, void 0, void 0, function* () {
-        yield client.git.createTag(Object.assign({ tag, message: '', object: github_1.context.sha, type: 'commit' }, github_1.context.repo));
-    });
-}
-exports.default = createTag;
-
-
-/***/ }),
-
 /***/ 82:
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
@@ -4172,7 +4146,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const github_1 = __webpack_require__(469);
-const createTag_1 = __importDefault(__webpack_require__(73));
+const createCommitTag_1 = __importDefault(__webpack_require__(443));
 const getPubspecVersion_1 = __importDefault(__webpack_require__(253));
 const checkTagExists_1 = __importDefault(__webpack_require__(98));
 function run() {
@@ -4190,7 +4164,7 @@ function run() {
             const tagExists = yield checkTagExists_1.default(client, tag);
             if (!tagExists) {
                 core.info(`creating tag ${tag}...`);
-                yield createTag_1.default(client, tag);
+                yield createCommitTag_1.default(client, tag, github_1.context.sha);
             }
         }
         catch (error) {
@@ -7802,6 +7776,32 @@ function escapeProperty(s) {
         .replace(/,/g, '%2C');
 }
 //# sourceMappingURL=command.js.map
+
+/***/ }),
+
+/***/ 443:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const github_1 = __webpack_require__(469);
+function createCommitTag(client, tag, commitSha) {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield client.git.createRef(Object.assign({ ref: `refs/tags/${tag}`, sha: commitSha }, github_1.context.repo));
+    });
+}
+exports.default = createCommitTag;
+
 
 /***/ }),
 

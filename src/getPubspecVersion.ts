@@ -18,7 +18,7 @@ export default async function getPubspecVersion(
     const pubspec = yaml.safeLoad(pubspecYaml);
     return pubspec['version'];
   } catch (err) {
-    if (err.code === 404) return null;
+    if (err.status === 404) return null;
     throw err;
   }
 }

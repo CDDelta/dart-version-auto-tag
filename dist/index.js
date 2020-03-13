@@ -2511,11 +2511,11 @@ const github_1 = __webpack_require__(469);
 function checkTagExists(client, tag) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield client.git.getTag(Object.assign({ tag_sha: tag }, github_1.context.repo));
+            yield client.git.getRef(Object.assign({ ref: `tags/${tag}` }, github_1.context.repo));
             return true;
         }
         catch (err) {
-            if (err.code === 404)
+            if (err.status === 404)
                 return false;
             throw err;
         }
@@ -4292,7 +4292,7 @@ function getPubspecVersion(client, path) {
             return pubspec['version'];
         }
         catch (err) {
-            if (err.code === 404)
+            if (err.status === 404)
                 return null;
             throw err;
         }
